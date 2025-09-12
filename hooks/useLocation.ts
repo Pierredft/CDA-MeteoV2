@@ -30,7 +30,7 @@ export function useLocation() {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
             };
-        } catch (err) {
+        } catch {
             setError('Erreur lors de la géolocalisation');
             return null;
         } finally {

@@ -41,7 +41,7 @@ export function useGeocode() {
                 latitude: city.latitude,
                 longitude: city.longitude,
             };
-        } catch (err) {
+        } catch {
             setError('Erreur lors de la recherche de la ville');
             return null;
         }
