@@ -1,5 +1,5 @@
 // app/(tabs)/forecast.tsx
-import { useWeather } from "@/app/context/WeatherContext";
+import { useWeather } from "@/context/WeatherContext";
 import Container from "@/components/ui/Container";
 import LoadingState from "@/components/ui/LoadingState";
 import ForecastHeader from "@/components/weather/ForecastHeader";
