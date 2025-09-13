@@ -18,21 +18,40 @@ export default function SearchSection({ onLocationFound, onError }: SearchSectio
     const isLoading = locationLoading || searchLoading;
 
     const handleSearch = async () => {
-        const cityResult = await searchCity(searchText);
-        if (cityResult) {
-            const location: LocationResult = {
-                latitude: cityResult.latitude,
-                longitude: cityResult.longitude,
-            };
-            onLocationFound(location, `${cityResult.name}, ${cityResult.country}`);
-            setSearchText('');
+        if (!searchText.trim()) {
+            onError('Veuillez saisir un nom de ville');
+            return;
+        }
+
+        try {
+            const cityResult = await searchCity(searchText);
+            if (cityResult) {
+                const location: LocationResult = {
+                    latitude: cityResult.latitude,
+                    longitude: cityResult.longitude,
+                };
+                onLocationFound(location, `${cityResult.name}, ${cityResult.country}`);
+                setSearchText('');
+            } else {
+                onError('Ville non trouvée. Vérifiez l\'orthographe.');
+            }
+        } catch (error) {
+            console.error('Erreur de recherche:', error);
+            onError('Erreur lors de la recherche. Réessayez.');
         }
     };
 
     const handleLocationPress = async () => {
-        const location = await getCurrentLocation();
-        if (location) {
-            onLocationFound(location, 'Ma position');
+        try {
+            const location = await getCurrentLocation();
+            if (location) {
+                onLocationFound(location, 'Ma position');
+            } else {
+                onError('Impossible d\'obtenir votre position. Vérifiez les autorisations.');
+            }
+        } catch (error) {
+            console.error('Erreur de géolocalisation:', error);
+            onError('Erreur lors de la géolocalisation. Réessayez.');
         }
     };
 
