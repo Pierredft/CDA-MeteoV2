@@ -12,7 +12,24 @@ import { LocationResult } from '@/hooks/useLocation';
 import React from 'react';
 import { Text } from 'react-native';
 
-const fond = require('../../assets/images/fond.jpg');
+function getWeatherBackground(weatherCode?: number) {
+  if (weatherCode === undefined || weatherCode === null) {
+    return require('../../assets/images/fond.jpg');
+  }
+  if ([0, 1, 2].includes(weatherCode)) {
+    return require('../../assets/gif/sun.gif');
+  } else if ([3, 45, 48].includes(weatherCode)) {
+    return require('../../assets/gif/fog.gif');
+  } else if ([51, 53, 55, 61, 63, 65].includes(weatherCode)) {
+    return require('../../assets/gif/rain.gif');
+  } else if ([71, 73, 75].includes(weatherCode)) {
+    return require('../../assets/gif/neige.gif');
+  } else if (weatherCode === 95) {
+    return require('../../assets/gif/storm.gif');
+  } else {
+    return require('../../assets/images/fond.jpg');
+  }
+}
 
 export default function HomeScreen() {
   const {
@@ -67,6 +84,7 @@ export default function HomeScreen() {
     await addCurrentLocation();
   };
 
+  const fond = getWeatherBackground(weatherData?.current_weather?.weathercode);
   return (
     <Container backgroundImage={fond}>
       <Section style={{ flex: 2 }}>
