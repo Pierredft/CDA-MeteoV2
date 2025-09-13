@@ -1,3 +1,4 @@
+import AddToFavoritesButton from '@/components/favorites/AddToFavoritesButton';
 import Container from '@/components/ui/Container';
 import LoadingState from '@/components/ui/LoadingState';
 import Section from '@/components/ui/Section';
@@ -6,6 +7,7 @@ import TemperatureDisplay from '@/components/weather/TemperatureDisplay';
 import WeatherDescription from '@/components/weather/WeatherDescription';
 import WeatherIcon from '@/components/weather/WeatherIcon';
 import { useWeather } from '@/context/WeatherContext';
+import { useFavorites } from '@/hooks/useFavorites';
 import { LocationResult } from '@/hooks/useLocation';
 import React from 'react';
 import { Text } from 'react-native';
@@ -56,6 +58,15 @@ export default function HomeScreen() {
     setError(errorMessage);
   };
 
+  const {
+    addCurrentLocation,
+    isCurrentLocationInFavorites
+  } = useFavorites();
+
+  const handleAddToFavorites = async () => {
+    await addCurrentLocation();
+  };
+
   return (
     <Container backgroundImage={fond}>
       <Section style={{ flex: 2 }}>
@@ -83,8 +94,12 @@ export default function HomeScreen() {
       </Section>
 
       <Section style={{ flex: 1 }}>
-        {/* Espace pour les prévisions */}
-        <></>
+        {weatherData && (
+          <AddToFavoritesButton
+            onPress={handleAddToFavorites}
+            isInFavorites={isCurrentLocationInFavorites}
+          />
+        )}
       </Section>
     </Container>
   )
