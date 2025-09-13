@@ -1,3 +1,4 @@
+// context/WeatherContext.tsx
 import { FavoriteCity, Location, WeatherContextType, WeatherData } from '@/hooks/types/weather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useState } from 'react';
@@ -47,8 +48,8 @@ export function WeatherProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const removeFromFavorites = async (cityName: string) => {
-        const updated = favorites.filter(fav => fav.name !== cityName);
+    const removeFromFavorites = async (cityId: string) => {
+        const updated = favorites.filter(fav => fav.id !== cityId);
         await saveFavorites(updated);
     };
 
