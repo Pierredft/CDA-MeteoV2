@@ -1,4 +1,3 @@
-// app/context/WeatherContext.tsx
 import { FavoriteCity, Location, WeatherContextType, WeatherData } from '@/hooks/types/weather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useState } from 'react';
@@ -48,29 +47,30 @@ export function WeatherProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const removeFromFavorites = async () => {
-        try {
-            const stored = await AsyncStorage.getItem(FAVORITES_KEY);
-            if (stored) {
-                setFavorites(JSON.parse(stored));
-            }
-        } catch (error) {
-            console.error('Erreur lors du chargement des favoris:', error);
-        }
+    const removeFromFavorites = async (cityName: string) => {
+        const updated = favorites.filter(fav => fav.name !== cityName);
+        await saveFavorites(updated);
+    };
+
+    const value: WeatherContextType = {
+        weatherData,
+        setWeatherData,
+        currentLocation,
+        setcurrentLocation,
+        cityName,
+        setCityName,
+        isLoading,
+        setIsLoading,
+        error,
+        setError,
+        favorites,
+        addToFavorites,
+        removeFromFavorites,
+        loadFavorites,
     };
 
     return (
-        <WeatherContext.Provider value={{
-            weatherData, setWeatherData,
-            currentLocation, setcurrentLocation,
-            cityName, setCityName,
-            isLoading, setIsLoading,
-            error, setError,
-            favorites,
-            addToFavorites,
-            removeFromFavorites,
-            loadFavorites,
-        }}>
+        <WeatherContext.Provider value={value}>
             {children}
         </WeatherContext.Provider>
     );
