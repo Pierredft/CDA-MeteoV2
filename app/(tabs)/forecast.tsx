@@ -1,9 +1,9 @@
 // app/(tabs)/forecast.tsx
-import { useWeather } from "@/context/WeatherContext";
 import Container from "@/components/ui/Container";
 import LoadingState from "@/components/ui/LoadingState";
 import ForecastHeader from "@/components/weather/ForecastHeader";
 import ForecastList from "@/components/weather/ForecastList";
+import { useWeather } from "@/context/WeatherContext";
 import React, { useMemo } from "react";
 
 const fond = require('../../assets/images/fondPrev.jpg');

@@ -34,7 +34,7 @@ export function useGeocode() {
                 return null;
             }
 
-            const city = data.result[0];
+            const city = data.results[0];
             return {
                 name: city.name,
                 country: city.country,
@@ -44,6 +44,8 @@ export function useGeocode() {
         } catch {
             setError('Erreur lors de la recherche de la ville');
             return null;
+        } finally {
+            setIsLoading(false);
         }
     };
 

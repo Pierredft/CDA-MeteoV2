@@ -1,4 +1,3 @@
-import { useWeather } from '@/context/WeatherContext';
 import Container from '@/components/ui/Container';
 import LoadingState from '@/components/ui/LoadingState';
 import Section from '@/components/ui/Section';
@@ -6,8 +5,8 @@ import SearchSection from '@/components/weather/SearchSection';
 import TemperatureDisplay from '@/components/weather/TemperatureDisplay';
 import WeatherDescription from '@/components/weather/WeatherDescription';
 import WeatherIcon from '@/components/weather/WeatherIcon';
+import { useWeather } from '@/context/WeatherContext';
 import { LocationResult } from '@/hooks/useLocation';
-import { useWeatherAPI } from '@/hooks/useWeatherAPI';
 import React from 'react';
 import { Text } from 'react-native';
 
@@ -19,27 +18,38 @@ export default function HomeScreen() {
     setWeatherData,
     cityName,
     setCityName,
+    setcurrentLocation,
     isLoading,
     setIsLoading,
     error,
     setError
   } = useWeather();
 
-  const {fetchWeatherData } = useWeatherAPI();
-
   const handleLocationFound = async (location: LocationResult, name: string) => {
-    setIsLoading(true);
     setIsLoading(true);
     setError(null);
     setCityName(name);
-    const data = await fetchWeatherData(location);
-    if (data) {
-      setWeatherData(data);
-    } else {
-      setError('Impossible de récupérer la météo');
-    }
+    setcurrentLocation(location);
 
-    setIsLoading(false);
+    try{
+      const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&hourly=relative_humidity_2m&timezone=auto&forecast_days=7`);
+
+      if(!response.ok) {
+        throw new Error(`Erreur API: ${response.status}`);
+      }
+      const data = await response.json();
+
+      if (!data.current_weather) {
+        throw new Error('Données météo actuelles non disponibles');
+      }
+
+      setWeatherData(data);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Erreur inconnue';
+      setError(`Impossible de récupérer la météo: ${message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleError = (errorMessage: string) => {
